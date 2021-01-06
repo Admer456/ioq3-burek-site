@@ -1,0 +1,183 @@
+<!DocType html>
+<html>
+<head>
+	<title>BUREKTech</title>
+	<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+
+<header>
+	<h1>BUREKTech Headquarters<br>&nbsp;Devlog entry #2</h1>
+</header>
+
+<div class="main">
+<section>
+	<a href="../index.html">Home</a> >> Devlog entry #2
+</section>
+
+<section>
+	<p>Date: 05/01/2021, 22:12:27</p>
+</section>
+
+<section>
+	<p>This entry was originally on TWHL:</p>
+	<p><a href="https://twhl.info/journal/view/9106">link</a></p>
+</section>
+
+<section>
+	<p>5th of January 2021, roughly a month after the last journal, "The adventures of BurekTech", a
+	series where I document my progress with my ioquake3 fork.
+	</p>
+
+	<p class="imgcont">
+	<img src="https://twhl.info/uploads/images/6754/78129697-b957-4e6c-8199-557d1d3c69b0.png"/>
+	Progress progress progress progress PROGRESS!!!
+	</p>
+
+	<p>
+	<h2>New ents</h2><hr>
+	While this isn't directly part of the engine, some entity classes have been implemented:
+	<ul>
+		<li>env_explosion</li>
+		<li>func_button</li>
+		<li>func_bobbing</li>
+		<li>func_door</li>
+		<li>func_toggle (basically like Half-Life's func_wall_toggle)</li>
+		<li>trigger_once</li>
+		<li>trigger_multiple</li>
+	</ul>
+	</p>
+
+	<p>
+	<h2>Mapping limits and otherwise</h2><hr>
+	</p>
+
+	<p class="imgcont">
+	<img src="https://i.imgur.com/cGuf2lz.jpg"/>
+	960 entities being rendered, approx. 460k tris + 600 world tris + 50 viewmodel tris
+	</p>
+
+	<p>
+	I've upped several limits now. Max visible entities are now 1024, max models are 1024, max sounds 
+	are also 1024 for now. Each of these were 256. Max brush models are thus also raised to 1024, I believe. 
+	Nonetheless, these limits are very easy to raise. It's just a matter of choosing sensible values, and for 
+	now, it's perfectly enough for me.
+	<br><br>
+	I've done some research and been reading the code. Max lightmaps seem to be 512, which is way, 
+	waaaaay more than enough for me at least. Max world faces (wpolys) are 131 072, max visleaves are 
+	also 131 072, max brushes are 65 536. Clipnodes aren't used in idTech 3, so I don't have to worry about those. 
+	</p>
+	
+	<p>
+	<h2>Stupid Mover Bug</h2><hr>
+	While I was implementing and testing <code>func_bobbing</code>, I noticed a really bizarre bug with player movement. 
+	On the clientside, the player would "detect" the moving entity fine, and try to move along with it. 
+	But on the server, that wouldn't happen. Ultimately, the answer was somewhere in the serverside collision code.<br><br>
+	Solid entities need to have an absolute bounding box defined in order to be taken into consideration 
+	when clipping against. My entity's abs bbox wasn't being correctly set up due to its origin. 
+	Quite an unusual thing. I decided to name it Stupid Mover Bug, inspired by the Stupid Quake Bug.
+	</p>
+
+	<p>
+	<h2>Custom compiler</h2><hr>
+	Ah yes, I've FINALLY managed to clone gtkRadiant just to get its q3map2 compiler. 
+	It's cleanly written for the most part and it's not too complex for a compiler. 
+	Miles cleaner than VHLT, although I guess its light stage could use some neat things from VHLT...<br>
+	The first thing I've done was adding Valve 220 support, mostly copied from XaeroX's J.A.C.K. 
+	version of q3map2. The difference is, It's a compile parameter now, <code>-valve220</code>. 
+	This makes it easier for us TrenchBroom users who like the Valve 220 format. Until 
+	TB gets patch support and brush primitives, it'll mostly stay this way.
+	<br><br>
+	Some other features I'd add to the compiler in the future include:
+	<ul>
+    	<li>writing vegetation data</li>
+    	<li>writing entity event data (a la Source I/O)</li>
+	</ul>
+	</p>
+
+	<p>
+	<h2>Crazy networking</h2><hr>
+	</p>
+
+	<p class="imgcont">
+	<img src="https://i.imgur.com/biIl5aM.jpg"/>
+	</p>
+
+	<p>
+	Near the end of December, I found out idTech 3 supports multiple instances on a single machine, 
+	which is AMAZING for basic multiplayer testing. This way, I can ensure co-op and deathmatch work. 
+	Coming from GoldSRC, this feels like discovering alien technology. 
+	</p>
+
+	<p>
+	<h2>Animation system in progress</h2><hr>
+	So, I was quite... saddened... to find out that you can't just place a point entity in the map, 
+	assign a model to it and an animation number, and expect it to animate. On the other hand, I 
+	was relieved to find out that idTech 3's animation system is literally 3 variables: 
+	<code>frame</code>, <code>oldframe</code> and <code>backlerp</code>. This is on the client. On the serverside, 
+	it's only one: <code>frame</code>.<br><br>
+
+	I decided to add a couple of variables: 
+	</p>
+
+	<pre class="c_wrap"><code class="c_main">
+<font class="c_builtintype">float</font>    framerate;      <font class="c_comm">// framerate of the animation</font>
+<font class="c_class">byte</font>     animation;      <font class="c_comm">// ID of the animation to play</font>
+<font class="c_class">byte</font>     animationFlags; <font class="c_comm">// look at AnimationFlags enum above</font>
+</code></pre>
+
+	<p>
+	<code>animationFlags</code> will be a nice way of telling the renderer "Hey, I wanna handle animation manually, i.e. 
+	I wish to increment frames on the server", or "Hey, I want this to be looped".<br>
+	Right now, models will only support monolithic animations, but in the future, they will support up to 
+	4 animation channels. For example, the torso plays one animation, and the legs play another. 
+	</p>
+
+	<p>
+	<h2>What's left til v0.1?</h2><hr>
+	Several things. First, I need to remove every single mention of <code>gentity_t</code>, since all code related to 
+	it is dead, i.e. won't ever be executed. It just makes compile times unnecessarily longer.<br>
+	Second, I need to finish writing the entity classes. I still haven't written <code>func_ladder</code>, <code>func_breakable</code>, 
+	<code>func_train</code> and so on.<br>
+	Third, I need to implement the animation system.
+	</p>
+	
+	<p>
+	<h2>What's left for the (far) future?</h2><hr>
+	A TON of things.
+		<ul>
+		    <li>a vegetation system so game entities aren't used</li>
+		    <li>rewrite almost the entire UI system (because my GOD, it's so inflexible)</li>
+		    <li>hitboxes (that's correct, there are no hitboxes in idTech 3)</li>
+		    <li>write a "GUI-in-world" solution that either renders to a texture (so it can be wrapped) or directly renders the polys in the world (significantly cheaper but only works on flat surfaces)</li>
+		    <li>a save system</li>
+		    <li>a subtitle system</li>
+		    <li>an optional day-night cycle that alternates between a number of external lightmaps</li>
+		    <li>projected light textures (think HL2 flashlight, GMod lamps)</li>
+		    <li>various sky additions (e.g. blending skyboxes, thunders etc.) etc.</li>
+		</ul>
+	Some of these will make it to 0.2, some will be in 0.3, some won't be until 0.5.<br>
+	Right now, however, I'm working on a game demo with this. It will be in a different repository, once 
+	released, and various features will be ported.
+	</p>
+</section>
+
+<section>
+	<h2>Comments forwarded from the TWHL journal:</h2>
+	<section>
+		<h3>cambreaKer said: (06/01/2021, 18:31:46)</h3>
+		<p>
+		this is really cool! good luck with your engine and game! really looking forward to this
+		</p>
+	</section>
+	<br>
+</section>
+
+<footer>
+	<p>Made by <b>Admer456</b></p>
+	<p>Hosted on <b>GitHub</b></p>
+</footer>
+</div>
+
+</body>
+</html>

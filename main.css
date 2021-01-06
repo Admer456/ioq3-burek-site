@@ -4,4 +4,134 @@ body
 	font-family: Verdana;
 	background-image: url("img/mainbackground.png");
 	background-size: 100%;
+	margin-left: 20%;
+	margin-right: 20%;
+	margin-top: 5%;
+	margin-bottom: 5%;
+}
+
+header
+{
+	margin-left: -5%;
+	margin-right: -5%;
+}
+
+nav
+{
+	text-align: center;
+
+	margin-top: -1%;
+	margin-bottom: 2%;
+	padding-right: 20%;
+	padding-left: 20%;
+}
+
+section
+{
+	background-color: rgba(55,55,55,0.6);
+
+	padding-right: 50%;
+
+	margin-top: 1%;
+
+	padding: 3%;
+	padding-top: 0;
+	padding-bottom: 0;
+	border: solid;
+	border-radius: 10px;
+	border-width: 2px;
+	border-color: rgba(200,200,200,0.2);
+}
+
+a
+{
+	text-decoration: none;
+}
+
+a:link, a:visited
+{
+	color: #ffff99;
+}
+
+a:hover, a:active
+{
+	color: #ffcc80;
+	background-color: rgba(240, 192, 64, 0.06);
+	text-decoration: underline;
+}
+
+footer
+{
+	margin-top: 1%;
+	border-radius: 10px;
+	padding: 1%;
+	background-color: rgba(0,0,0,0.5);
+	font-size: 0.75em;
+}
+
+.main
+{
+	padding: 3%;
+	background-color: rgba(10,10,10,0.3);
+	border-radius: 10px;
+}
+
+img
+{
+	max-width: 100%;
+	max-width: 100%;
+}
+
+/*image container with support for captioned text*/
+.imgcont
+{
+	background-color: rgba(200,200,200,0.05);
+	padding: 5px;
+
+	text-align: center;
+}
+
+/*inline code*/
+code
+{
+	color: #80ff80;
+}
+
+/*
+* Various code tags, for builtin data types, user-defined types,
+* functions, macros etc.
+*/
+
+.c_wrap
+{
+	margin: 2%;
+	padding: 1%;
+	padding-top: 0;
+	background-color: #252525;
+	border-radius: 5px;
+}
+
+.c_main
+{
+	color: #f0f0f0;
+}
+
+.c_builtintype
+{
+	color: #80dfff;
+}
+
+.c_class
+{
+	color: #80ff9f;
+}
+
+.c_enum
+{
+	color: #9fff80;
+}
+
+.c_comm
+{
+	color: #3d8f3d;
 }

@@ -1,0 +1,164 @@
+<!DocType html>
+<html>
+<head>
+	<title>BUREKTech</title>
+	<link rel="stylesheet" href="../main.css">
+</head>
+<body>
+
+<header>
+	<h1>BUREKTech Headquarters<br>&nbsp;Devlog entry #1</h1>
+</header>
+
+<div class="main">
+<section>
+	<a href="../index.html">Home</a> >> Devlog entry #1
+</section>
+<section>
+	<p>Date: 01/12/2020, 19:27:28</p>
+</section>
+<section>
+	<p>This entry was originally on TWHL:</p>
+	<p><a href="https://twhl.info/journal/view/9103">link</a></p>
+</section>
+
+<section>
+	<p>In my last journal, "GoldSRC + Godot = ???", I wrote about the 
+	idea of a game engine/framework built on top of Godot, that aims 
+	to have a workflow very similar to GoldSRC. You can map for it 
+	with J.A.C.K., TrenchBroom, or even Hammer in theory, AND sell 
+	games made with it. Then I stopped working on that and moved 
+	back to my ioquake3 fork, BurekTech. Same idea, different engine.
+	</p>
+
+	<p class="imgcont">
+	<img src="https://i.imgur.com/wvpGdWN.png"/>
+	WE SQUASHED THEM BUGS
+	</p>
+
+	<p>
+	3 big issues were closed this month, pushing the completion from 11% to 29%. 
+	I ported a good chunk of the game code from C/idTech 3 way to C++/BurekTech way.
+	</p>
+
+	<p>
+	What this means is, instead of a bunch of global functions and structs, 
+	I now have some classes responsible for the game logic (entity spawning, 
+	for example), as well as some entity classes. So I didn't just rename all 
+	.c files to .cpp and fix the compile errors.
+	</p>
+
+	<p class="imgcont">
+	<img src="https://i.imgur.com/Ohvr620.jpg"/>
+	Looks like a ghost town when no entities are 'round
+	</p>
+
+	<p>
+	After all the remaining required functionality is ported (spawning temp 
+	entities, selecting a spawnpoint (the player spawns at 0,0,0 at the moment), 
+	making sure MP works), the next step is to re-implement some important <code>trigger_</code>, 
+	<code>func_</code> and <code>info_</code> entities. Then write some utilities, like for gib spawning; a 
+	basic AI for NPCs (the Q3 bot code is big, no way I'm porting that soon D:); 
+	and, maybe not immediately, a save-load system.
+	<br>
+	Another concept I had was entity semi-components, but certainly won't be in version 0.1.
+	</p>
+	
+	<p class="imgcont">
+	<img src="https://i.imgur.com/EAP3rrj.png"/>
+	</p>
+
+	<p>
+	BurekTech is not really an engine IMO, since most of the work is done in the game 
+	library. It's not an engine-agnostic game framework either. It's like... a game base? 
+	I dunno.<br>
+	With that said, BurekTech 2.0 should be initially based on a different engine like 
+	Godot (partially due to licencing), most likely as a plugin. The idea is still gonna 
+	be the same. The folder structure is still gonna be (largely) the same. You get the point.
+	</p>
+
+	<p>
+	Anyway, I hope that BurekTech will be ready enough by the end of December, so I can 
+	start making a game in January. Or in February. It's gonna be a medium-paced retro FPS, 
+	set in 2033 Bosnia. I might post a few screenshots in the WiP screenshots thread.
+	</p>
+</section>
+
+<section>
+	<h2>Comments forwarded from the TWHL journal:</h2>
+	<section>
+		<h3>VeryCoolMoment said: (01/12/2020, 21:05:16)</h3>
+		<p>
+		Cool!<br>
+		BurekTech Seems really good from all of the images
+		</p>
+	</section>
+	<section>
+		<h3>Stojke said: (01/12/2020, 21:09:07)</h3>
+		<p>
+		The component system sounds real grand.
+		</p>
+	</section>
+	<section>
+		<h3>Admer456 said: (01/12/2020, 21:26:13)</h3>
+		<p>
+		Update: brush entities now seem to render
+		</p>
+
+		<p class="imgcont">
+		<img src="https://i.imgur.com/22abGzj.jpg"/>
+		</p>
+	
+		<p>
+		@component system<br>
+		In fact, I believe this could be done within a HL mod. But, I won't experiment 
+		with that until 2022.
+		</p>
+	</section>
+	<section>
+		<h3>Alberto said: (02/12/2020, 17:55:19)</h3>
+		<p>
+		When you say that JACK, TB and Hammer can be used, you mean that we can use the 
+		standard GoldSRC configuration to map for it? Because JACK supports Quake 3 
+		mapping which has some differences like the way you can manipulate the UV map 
+		to round a texture on a curved plane, something that the GoldSRC configuration 
+		doesn't have (unless it can be added/hacked in it).<br><br>
+		By the way, great job my friend!
+		</p>
+	</section>
+	<section>
+		<h3>Admer456 said: (02/12/2020, 21:33:15)</h3>
+		<p>
+		@Alberto<br>
+		Yes. My main support is for TrenchBroom (Quake 3 map format, w/o patches for now) 
+		and J.A.C.K. (true Quake 3 map format). I am assuming that TB will eventually get 
+		true Q3 format support, with patches. Patches are actually those curved planes you're 
+		alking about. They can also be cylinders, cones, terrain etc., basically meshes inside 
+		the BSP like Source displacements.
+		<br><br>
+		Hammer 3.x is less likely, BUT, as long as you have a q3map2 that supports the Valve 
+		220 format (J.A.C.K.'s q3map2 does), you'll be fine. It's of lower priority TBH.<br>
+		However, a big issue with Hammer is the textures. Since using GoldSRC-specific 
+		formats (MDL, WAD3, HL BSP etc.) is technically illegal in engines outside of 
+		GoldSRC, and I wanna make paid games with this engine (and put 'em on Steam at 
+		some point), yeah. No. We can forget about Hammer support here.
+		<br><br>
+		Anyway, another update: now brush entities are solid and can be collided with. 
+		I am almost ready to begin re-implementing some of the most needed entities.
+		</p>
+		<p class="imgcont">
+		<img src="https://twhl.info/uploads/images/6754/92b6c9b8-4834-456d-9fea-942c73a55688.png"><br>
+		Hell ye
+		</p>
+	</section>
+	<br>
+</section>
+
+<footer>
+	<p>Made by <b>Admer456</b></p>
+	<p>Hosted on <b>GitHub</b></p>
+</footer>
+</div>
+
+</body>
+</html>
